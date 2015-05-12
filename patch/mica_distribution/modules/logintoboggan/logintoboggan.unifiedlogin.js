@@ -10,6 +10,7 @@ Drupal.behaviors.unifiedLogin = {
       $('.toboggan-unified #login-link').removeClass('btn-primary');
       $('.toboggan-unified #register-form').show();
       $('.toboggan-unified #login-form').hide();
+      Drupal.settings.LoginToboggan.unifiedLoginActiveForm = 'register';
       return false;
     });
     $('.toboggan-unified #login-link').click(function() {
@@ -17,6 +18,7 @@ Drupal.behaviors.unifiedLogin = {
       $('.toboggan-unified #register-link').removeClass('btn-primary');
       $('.toboggan-unified #login-form').show();
       $('.toboggan-unified #register-form').hide();
+        Drupal.settings.LoginToboggan.unifiedLoginActiveForm = 'login';
       return false;
     });
 
