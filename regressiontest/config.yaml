@@ -1,0 +1,11 @@
+opal_url: http://localhost:8080
+opal_username: administrator
+opal_password: password
+# The Opal user that mica uses. This user must already exist and be configured with the certificate of Mica
+opal_mica_user: ssl_mica
+
+mica_url: http://localhost:7880/mica
+mica_username: mica
+mica_password: mica
+# The url Mica should use to access Opal, if different from opal_url
+mica_opal_url: https://localhost:8443/
