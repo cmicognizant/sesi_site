@@ -1,114 +1,83 @@
 <?php
 
-function views_access_restrictions_views_post_execute(&$view) {
-    global $user;
-
-    if (in_array('administrator', array_values($user->roles))) {
-        // Administrator can see everything, don't remove anything from the view.
-        return;
-    }
-
-    switch ($view->name) {
-        case 'community_by_dataset':
-            _views_access_restrictions_filter_communities($view);
-            break;
-        case 'datasets':
-        case 'studies_search':
-            _views_access_restrictions_filter_community_content($view);
-            break;
-    }
-}
-
-function _views_access_restrictions_filter_community_content(&$view) {
-    global $user;
-
-    watchdog('views_access_restrictions', 'Running post execute filter_community_content '. $view->name, array(), WATCHDOG_DEBUG);
-
-    $results = array();
-    foreach ($view->result as $key => $value) {   
-        // get id of node, if user has access, add item and continue
-        $node = $value->entity;
-
-        //Criteria 1 : if draft and not owner... first this criteria need to be checked.        
-        if($node->status == "0" && $node->uid != $user->uid){
-             continue;
-        }
-
-        // If we have access to the node, list it.
-        if(node_access('view',$node)) {
-            array_push($results, $value);
-            continue;
-        }
-
-        // user has no access. We still show this item in the listing if it is not part of any hidden community.
-        if(views_access_restrictions_is_hidden_project_content($node->nid)) {
-            continue;        
-        } else {
-            //add element to final array
-            array_push($results, $value);
-        }
-    }
-    
-    //rewrite the final results page
-    $view->result = $results;
-}
-
-function _views_access_restrictions_filter_communities(&$view) {
-
-    watchdog('views_access_restrictions', 'Running post search filter_communities on '. $view->name, array(), WATCHDOG_DEBUG);
-
-    $results = array();
-    foreach ($view->result as $key => $value) {
-        // get id of community, if user has access, add item and continue
-        $nid = $value->nid;
-        $node = node_load($nid);
-        if (og_is_member('node', $nid)) {
-            array_push($results, $value);
-            continue;
-        }
-
-        // is not member, only show community if field_project_visibity is not hidden
-        if(property_exists($node, 'field_project_visibility') &&
-          $node->field_project_visibility[LANGUAGE_NONE][0]['value'] == '0') {
-            continue;
-        } else {
-            array_push($results, $value);
-        }
-    }
-
-    //rewrite the final results page
-    $view->result = $results;
-}
-
 /**
- * To check if a node belongs to a hidden community / project
+ * Implements hook_search_api_query_alter().
+ *
+ * Restrict results to visible communities. This may also include results to which the user has no access but which the
+ * user can only see.
+ *
+ * Based on search_api_search_api_query_alter
+ *
+ * @param SearchApiQueryInterface $query
+ *   The SearchApiQueryInterface object representing the search query.
  */
-function views_access_restrictions_is_hidden_project_content($nid) {
+function views_access_restrictions_search_api_query_alter(SearchApiQueryInterface $query) {
+    // criteria:
+    // 1: un-owned draft content is not visible
+    // 2: content from communities to which we have access is visible
+    // 3: if the community is not hidden, the content is visible
 
-    // get number of communities associated to the given node and count
-    // the hidden ones
-    $gids = og_get_entity_groups('node', $nid);
+    $index = $query->getIndex();
+    // Only add node access if the necessary fields are indexed in the index, and
+    // unless disabled explicitly by the query.
+    $fields = $index->options['fields'];
+    if (!empty($fields['og_group_ref']) && !empty($fields['status']) && !empty($fields['author'])) {
+        $account = $query->getOption('search_api_access_account', $GLOBALS['user']);
+        if (is_numeric($account)) {
+            $account = user_load($account);
+        }
+        if (is_object($account)) {
+            try {
+                if (!user_access('access content', $account)) {
+                    // Simple hack for returning no results.
+                    $query->condition('status', 0);
+                    $query->condition('status', 1);
+                    watchdog('search_api', 'User @name tried to execute a search, but cannot access content.', array('@name' => theme('username', array('account' => $account))), WATCHDOG_NOTICE);
+                }
 
-    if (sizeof($gids) > 0) {
-        // get gids as keys
-        $keys = array_keys(array_flip($gids['node']));
+                // Only filter for user which don't have full node access.
+                elseif (!user_access('bypass node access', $account)) {
+                    // Filter by node "published" status.
+                    if (user_access('view own unpublished content')) {
+                        $filter = $query->createFilter('OR');
+                        $filter->condition('status', NODE_PUBLISHED);
+                        $filter->condition('author', $account->uid);
+                        $query->filter($filter);
+                    }
+                    else {
+                        $query->condition('status', NODE_PUBLISHED);
+                    }
 
-        // get complete entity of each group
-        $groups = entity_load('node', $keys);
+                    // Find visible communities
+                    $visible_nids = _views_access_restrictions_visible_groups($account);
 
-        foreach ($groups as $g) {
-            if (!property_exists($g, 'field_project_visibility')) {
-                continue;
+                    $filter = $query->createFilter('OR');
+                    foreach($visible_nids as $nid) {
+                        $filter->condition('og_group_ref', $nid);
+                    }
+                    $query->filter($filter);
+                }
             }
-
-            $h = $g->field_project_visibility[LANGUAGE_NONE][0]['value'];
-
-            // return true then project visibility is hidden
-            if ($h=='0') {
-                return TRUE;
+            catch (SearchApiException $e) {
+                watchdog_exception('search_api', $e);
             }
         }
+        else {
+            watchdog('search_api', 'An illegal user UID was given for node access: @uid.', array('@uid' => $query->getOption('search_api_access_account', $GLOBALS['user'])), WATCHDOG_WARNING);
+        }
     }
+}
 
-    return FALSE;
+
+function _views_access_restrictions_visible_groups($user) {
+    $member_groups = og_get_entity_groups('user', $user->uid);
+    $member_groups = array_values($member_groups['node']);
+
+    $visible_groups = db_query("
+        SELECT n.nid FROM {node} as n, {field_data_field_project_visibility} as fpv
+        WHERE n.type = 'community'
+            AND fpv.field_project_visibility_value = 1
+            AND fpv.entity_id = n.nid")->fetchCol();
+
+    return array_unique(array_merge($member_groups, $visible_groups));
 }
