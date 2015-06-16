@@ -46,12 +46,40 @@ function sesi_communities_and_files_field_group_info_alter(&$data) {
 }
 
 /**
+ * Implements hook_default_search_api_index_alter().
+ */
+function sesi_communities_and_files_default_search_api_index_alter(&$data) {
+  if (isset($data['dataset_index'])) {
+    $data['dataset_index']->options['fields']['og_group_ref'] = array(
+      'type' => 'list<integer>',
+      'entity_type' => 'node',
+    ); /* WAS: '' */
+  }
+  if (isset($data['fields_description_index'])) {
+    $data['fields_description_index']->options['fields']['og_group_ref'] = array(
+      'type' => 'list<integer>',
+      'entity_type' => 'node',
+    ); /* WAS: '' */
+  }
+  if (isset($data['studies_index'])) {
+    $data['studies_index']->options['fields']['og_group_ref'] = array(
+      'type' => 'list<integer>',
+      'entity_type' => 'node',
+    ); /* WAS: '' */
+  }
+  if (isset($data['variable_index'])) {
+    $data['variable_index']->options['fields']['og_group_ref'] = array(
+      'type' => 'list<integer>',
+      'entity_type' => 'node',
+    ); /* WAS: '' */
+  }
+}
+  
+  
+/**
  * Implements hook_field_default_field_instances_alter().
  */
 function sesi_communities_and_files_field_default_field_instances_alter(&$data) {
-  if (isset($data['node-community-group_access'])) {
-    $data['node-community-group_access']['default_value']['0']['value'] = 1; /* WAS: 1 */
-  }
   if (isset($data['og_membership-og_membership_type_default-field_mail_sent'])) {
     $data['og_membership-og_membership_type_default-field_mail_sent']['required'] = 0; /* WAS: 1 */
   }
@@ -69,6 +97,15 @@ function sesi_communities_and_files_strongarm_alter(&$data) {
   }
   if (isset($data['content_access_variable'])) {
     $data['content_access_variable']->value['priority'] = -1; /* WAS: '' */
+  }
+}
+
+/**
+ * Implements hook_views_default_views_alter().
+ */
+function sesi_communities_and_files_views_default_views_alter(&$data) {
+  if (isset($data['studies_search'])) {
+    $data['studies_search']->display['default']->display_options['query']['options']['search_api_bypass_access'] = 1; /* WAS: '' */
   }
 }
 
@@ -95,13 +132,4 @@ function sesi_communities_and_files_node_info() {
     ),
   );
   return $items;
-}
-
-/**
- * Implements hook_views_default_views_alter().
- */
-function sesi_communities_and_files_views_default_views_alter(&$data) {
-  if (isset($data['studies_search'])) {
-    $data['studies_search']->display['default']->display_options['query']['options']['search_api_bypass_access'] = 1; /* WAS: '' */
-  }
 }
