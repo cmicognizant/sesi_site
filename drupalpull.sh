@@ -295,7 +295,7 @@ chmod 775 $DRUPAL_ROOT/sites/default/files/private
 drush php-eval 'node_access_rebuild();'
 
 drush cc all
-drush cron
+drush cron || true
 
 # Run query_ontologies database updates
 drush eval '_query_ontologies_update_schema();'
