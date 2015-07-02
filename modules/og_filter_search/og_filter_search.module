@@ -101,9 +101,9 @@ function _og_filter_search_is_not_viewable($node) {
     // if a node is:
     // - a content of hidden project, and
     // - user is not member that project
-    // the content is not viewable
-    if (views_access_restrictions_is_hidden_project_content($node) &&
-            !_dataset_access_form_get_intersect_groups($user, $node->nid)) {
+    // the content is not viewable : removed method views_access_restrictions_is_hidden_project_content()
+    echo(!_dataset_access_form_get_intersect_groups($user, $node->nid));
+    if (!_dataset_access_form_get_intersect_groups($user, $node->nid)) {
         $retval = TRUE;
     }
     
