@@ -13,7 +13,7 @@ function mica_bootstrap_bootstrap_based_theme() {
 function mica_bootstrap_menu_tree__user_menu($variables) {
   global $user;
   return '<div id="user-menu" class="pull-right btn-group" >'
-  . '<a style="width:89px;" class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-user"></i> ' . htmlspecialchars($user->name) . ' <span class="caret"></span></a>'
+  . '<a style="width:80px;" class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-user"></i> ' . htmlspecialchars($user->name) . ' <span class="caret"></span></a>'
   . '<ul class="dropdown-menu">' . $variables['tree'] . '</ul></div>';
 }
 
