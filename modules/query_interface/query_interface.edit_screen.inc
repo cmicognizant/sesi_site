@@ -246,6 +246,9 @@ function sesi_mica_query_edit_form($variables) {
     $output .= "<a href='#' onClick='Sesi.QueryInterface.TaxonomyTree.selectAll(false); return false;'>Deselect all</a>";
     $output .= "<div id='taxonomy_tree' class='aciTree' data-url='" . htmlspecialchars( $form[ '#taxonomy-url' ] ). "'></div>";
     $output .= "</div>";
+    
+    $output .= "<style> #edit-actions{ text-align:right !important; } </style>";
+    
     $output .= "<div id='query_screen'>";
     
     // Add fulltext search
@@ -260,11 +263,14 @@ function sesi_mica_query_edit_form($variables) {
     //       the buttons for these variables (only add button) will be added to 
     //       an element with the name 'buttons-not-selected
     $output .= _query_interface_render_query_terms_table($form["list"], $form["remove-term"]);
+    
+    $output .= drupal_render_children($form, array('actions'));      
+    
     $output .= _query_interface_render_variables_table($form["not-selected"], $form["buttons-not-selected"]);
 
     $output .= drupal_render_children($form, array('cross'));
     $output .= drupal_render_children($form, array('general'));
-    $output .= drupal_render_children($form, array('actions'));
+    
 
     // add form hidden items, otherwise submit and validate will be ignored
     $fieldsAlreadyPrinted = array('general', 'cross', 'actions', 'list', 'remove-term', 'not-selected', 'buttons-list', 'buttons-not-selected', 'fulltext-search');
