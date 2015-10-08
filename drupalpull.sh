@@ -222,7 +222,7 @@ ensure_feat sesi_user_profile_fields
 ensure_feat sesi_default_community
 ensure_feat sesi_site_map
 ensure_feat sesi_easy_social
-ensure_feat sesi_twitter
+#ensure_feat sesi_twitter
 ensure_feat sesi_printer_friendly
 ensure_feat sesi_expiration_date
 ensure_feat sesi_notify_expirations
