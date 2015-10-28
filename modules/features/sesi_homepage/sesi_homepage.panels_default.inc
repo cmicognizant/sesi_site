@@ -226,29 +226,7 @@ function sesi_homepage_default_panels_mini() {
     $pane->configuration = array(
       'admin_title' => '',
       'title' => '',
-      'body' => '<h2 class="pane-title">Twitter</h2>
-
-<p><strong>CMI vzw</strong> @CMIvzw - 25 mei<br />
-Goud voor uz Leuven #employer of the year!</p>
-
-<p><strong>CMI vzw</strong> @CMIvzw - 21 mei<br />
-Please check our poster #kfg2014 tomorrow!</p>
-
-<p><strong>CMI vzw</strong> @CMIvzw - 20 mei<br />
-Test twitter</p>
-
-<p><strong>CMI vzw</strong> @CMIvzw - 20 mei<br />
-Hello world</p>
-
-<hr />
-<div><strong>Gaston Geenslaan 11 , 3001 Heverlee, Belgium.</strong></div>
-
-<div><strong>Telephone</strong>: +32 16 29 09 46 [tel + fax]</div>
-
-<div><strong>E-mail:</strong> secretariaat@cmi-vzw.be</div>
-
-<p>&nbsp;</p>
-',
+      'body' => '',
       'format' => 'full_html',
       'substitute' => TRUE,
     );
