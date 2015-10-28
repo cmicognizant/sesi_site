@@ -66,6 +66,10 @@ h2 {color: #CF0000;}
 .details>li>a {
      text-decoration: none;
 }
+//Update for sesisup 47
+.login-link {
+     text-decoration: none;
+}
 
 a:hover, a:active {
 color: #1544CE;
