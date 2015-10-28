@@ -53,26 +53,39 @@ margin-bottom: -100px;
 /*===========================================================================*/
 
 h2 {color: #CF0000;}
-
-a:hover, a:active {
-    color: #495961;
-    text-decoration: underline;
+/*SESISUP 47*/
+.dropdown-menu>li>a {  
+     text-decoration: none;
 }
-a:hover, a:focus {
-    outline: 0;
-    color: #4183C4;
-}
-a 
-{
-    color: #495961;
+.dropdown-toggle     {
     text-decoration: none;
 }
+.action-links>li>a {
+    text-decoration: none;
+}
+.details>li>a {
+     text-decoration: none;
+}
+
+a:hover, a:active {
+color: #1544CE;
+text-decoration: none;
+}
+a:hover, a:focus {
+outline: 0;
+color: #1544CE;
+}
+a
+{
+color: #1544CE;
+text-decoration: underline;
+}
 a.thumbnail:hover {
-    color: #CF0000 !important;
+color: #CF0000 !important;
 }
 .details {
-    border-top:5px solid #CF0000 !important;
-    position:relative; 
+border-top:5px solid #CF0000 !important;
+position:relative;
 }
 
 /* To put the modal popup on top of the navigation bar, especially if the 
@@ -81,7 +94,7 @@ browser window is small */
     z-index: 2000 !important;
 }
 
-//.container {width:1024px !important;} //SESISUP-23; PARTHA
+.container {width:1024px !important;}
 
 /* To hide OG selection box in the registration page */
 /*#user-register-form #edit-og-group-ref {display: none;}*/
@@ -99,8 +112,7 @@ browser window is small */
 .home-panel {
     background: url("../cmi_background.png");
     border-radius: 10px;
-    height: 250px; border:1px solid #CCCCCC; 
-    //width:1024px; //SESISUP-23; PARTHA
+    width:1024px; height: 250px; border:1px solid #CCCCCC;
 }
 
 .home-panel #upper-container 
@@ -142,11 +154,13 @@ browser window is small */
     padding: 1em 1em;
     color: #777;
     font-size: 1.2em;
+    
 }
 
 #navcontainer ul li a:hover
 {
     color: #CF0000;
+    text-decoration: none;
 }
 
 #navcontainer ul li i
