@@ -54,6 +54,9 @@ margin-bottom: -100px;
 
 h2 {color: #CF0000;}
 /*SESISUP 47*/
+.btn-success {
+        text-decoration: none;
+}
 .dropdown-menu>li>a {  
      text-decoration: none;
 }
