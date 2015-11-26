@@ -101,7 +101,7 @@ browser window is small */
     z-index: 2000 !important;
 }
 
-.container {width:1024px !important;}
+/*.container {width:1024px !important;}*/
 
 /* To hide OG selection box in the registration page */
 /*#user-register-form #edit-og-group-ref {display: none;}*/
@@ -119,7 +119,8 @@ browser window is small */
 .home-panel {
     background: url("../cmi_background.png");
     border-radius: 10px;
-    width:1024px; height: 250px; border:1px solid #CCCCCC;
+   /* width:1024px;*/ /*SESISUP - 23*/
+      height: 250px; border:1px solid #CCCCCC;
 }
 
 .home-panel #upper-container 
