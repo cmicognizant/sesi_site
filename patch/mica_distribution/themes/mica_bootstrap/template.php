@@ -12,8 +12,13 @@ function mica_bootstrap_bootstrap_based_theme() {
  */
 function mica_bootstrap_menu_tree__user_menu($variables) {
   global $user;
+  $usr_name = htmlspecialchars($user->name);
+  if(strlen($usr_name) > 9){
+      $usr_name = substr($usr_name, 0, 9);
+      $usr_name .= "..";
+  }  
   return '<div id="user-menu" class="pull-right btn-group" >'
-  . '<a style="width:80px;" class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-user"></i> ' . htmlspecialchars($user->name) . ' <span class="caret"></span></a>'
+  . '<a style="width:80px;" class="btn dropdown-toggle" data-toggle="dropdown" href="#" title="'.htmlspecialchars($user->name).'"><i class="icon-user"></i> ' . $usr_name . ' <span class="caret"></span></a>'
   . '<ul class="dropdown-menu">' . $variables['tree'] . '</ul></div>';
 }
 
