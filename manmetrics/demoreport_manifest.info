@@ -1,0 +1,15 @@
+# filename of the report
+name: testreport.html
+
+# owner email, will be sent an email with the secured link to the report
+owner: user1@cmi-vzw.be
+
+# what to do with new files if a file with this name already exists? 
+# possible values: 'overwrite', 'new_key'. For 'overwrite, the file will overwrite the
+# old file, and will be visible at the same url as the old file. For 'new_key', a new 
+# url will be generated and thus the old and new files will both be accessible.
+duplicates: overwrite
+
+# (optional) send notification email on overwrite?
+# (When a new key is generated, an email is sent unconditionally)
+overwrite_notify: no
